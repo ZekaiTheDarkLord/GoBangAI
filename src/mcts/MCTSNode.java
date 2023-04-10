@@ -8,22 +8,25 @@ import java.util.*;
 
 // class that implements monte carlo tree search
 public class MCTSNode {
-    IBoard gameBoard;
-    MCTSNode parent;
-    Pos parentAction;
-    int numberOfVisits;
-    int wins;
-    int loses;
-    BlackOrWhite currentPlayer;
+    private final IBoard gameBoard;
+    private final MCTSNode parent;
+    private final Pos parentAction;
+    private int numberOfVisits;
+    private int wins;
+    private int loses;
+    private final BlackOrWhite currentPlayer;
+    private BlackOrWhite aiSide;
 
-    List<MCTSNode> children;
-    Stack<Pos> untriedActions;
+    private List<MCTSNode> children;
+    private final Stack<Pos> untriedActions;
 
     public MCTSNode(IBoard board, BlackOrWhite inputColor) {
         this.gameBoard = board;
         this.currentPlayer = inputColor;
+        this.aiSide = inputColor;
         this.parent = null;
         this.parentAction = null;
+        this.children = new ArrayList<>();
         this.untriedActions = board.getValidPos();
     }
 
@@ -82,13 +85,7 @@ public class MCTSNode {
     // backpropagation process
     public void backPropagate(BlackOrWhite result) {
         numberOfVisits++;
-        if (result == BlackOrWhite.BLACK) {
-            wins++;
-        } else if (result == BlackOrWhite.WHITE) {
-            loses++;
-        } else {
-            throw new IllegalArgumentException("Illegal input for backpropagation!");
-        }
+        calculateWinning(result);
 
         if (this.parent != null) {
             this.parent.backPropagate(result);
@@ -141,12 +138,33 @@ public class MCTSNode {
         return possibleMoves.get(randomIndex);
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-
     // calculate the UCT value of the given node
     private double getUCT(MCTSNode child, double cParam) {
         return ((float) child.getWinningScore() / (float) child.getNumberOfVisits()) +
                 cParam * Math.sqrt((2 * Math.log(this.getNumberOfVisits()) / child.getNumberOfVisits()));
+    }
+
+    // count the wins and loses depends on the AI side
+    private void calculateWinning(BlackOrWhite result) {
+        if (aiSide == BlackOrWhite.BLACK) {
+            if (result == BlackOrWhite.BLACK) {
+                wins++;
+            } else if (result == BlackOrWhite.WHITE) {
+                loses++;
+            } else {
+                throw new IllegalArgumentException("Illegal input for result!");
+            }
+        } else if (aiSide == BlackOrWhite.WHITE) {
+            if (result == BlackOrWhite.BLACK) {
+                loses++;
+            } else if (result == BlackOrWhite.WHITE) {
+                wins++;
+            } else {
+                throw new IllegalArgumentException("Illegal input for result!");
+            }
+        } else {
+            throw new IllegalArgumentException("Illegal input for AI side!");
+        }
     }
 
     private BlackOrWhite switchColor(BlackOrWhite color) {

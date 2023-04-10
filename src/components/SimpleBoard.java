@@ -50,7 +50,8 @@ public class SimpleBoard implements IBoard {
                 throw new IllegalArgumentException("Error: there is a chess at that position, please re-enter a position");
             } else {
                 board[row - 1][col - 1] = chess;
-                System.out.printf("You have place a chess at position (%d, %d)\n", row, col);
+                System.out.printf("Player has place a " + chess + " at position (%d, %d)\n", row, col);
+                System.out.println();
             }
         } else {
             throw new IllegalArgumentException("Error: there is a chess at given position, please re-enter a position");
