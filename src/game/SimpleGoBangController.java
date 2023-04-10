@@ -25,6 +25,7 @@ public class SimpleGoBangController implements IGoBangController {
         gameModel.startGame();
 
         while(true) {
+            System.out.println("------------------------------");
             String currentPlayer = (gameModel.getCurrentPlayer() == BlackOrWhite.BLACK) ? "BLACK(#)" : "WHITE(*)";
             System.out.println("It is " + currentPlayer + "'s term");
 
