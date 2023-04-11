@@ -18,7 +18,6 @@ public interface IGoBangModel {
 
     void switchPlayerTakeTurn();
 
-    // TODO: better the game end condition
     boolean isGameEnd();
 
     void visualizeGame();
