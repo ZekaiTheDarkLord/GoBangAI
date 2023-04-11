@@ -9,7 +9,7 @@ import java.io.IOException;
 class Main {
     public static void main(String[] args) throws IOException {
         IGoBangController controller = new SimpleGoBangController(7);
-        controller.setPlayers(new HumanPlayer(), new MCTSPlayer(BlackOrWhite.WHITE));
+        controller.setPlayers(new MCTSPlayer(BlackOrWhite.BLACK), new HumanPlayer());
         controller.playGame();
     }
 }
