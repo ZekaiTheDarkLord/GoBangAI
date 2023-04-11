@@ -24,12 +24,12 @@ public class SimpleGoBangController implements IGoBangController {
     public void playGame() throws IOException {
         gameModel.startGame();
 
-        while(true) {
+        while (true) {
             System.out.println("------------------------------");
             String currentPlayer = (gameModel.getCurrentPlayer() == BlackOrWhite.BLACK) ? "BLACK(#)" : "WHITE(*)";
             System.out.println("It is " + currentPlayer + "'s term");
 
-            while(true) {
+            while (true) {
                 try {
                     gameModel.visualizeGame();
                     gameModel.currentPlayerTakeTurn();
