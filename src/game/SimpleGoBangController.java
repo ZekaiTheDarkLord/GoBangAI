@@ -40,7 +40,7 @@ public class SimpleGoBangController implements IGoBangController {
             }
 
             if (gameModel.isGameEnd()) {
-                System.out.println("Game over! " + currentPlayer + "side wins.");
+                System.out.println("Game over! " + currentPlayer + " side wins.");
                 break;
             }
 

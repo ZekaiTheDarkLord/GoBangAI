@@ -1,6 +1,5 @@
 package components;
 
-import java.util.List;
 import java.util.Stack;
 
 public interface IBoard {
@@ -14,7 +13,9 @@ public interface IBoard {
 
     void printBoard();
 
-    boolean isGameOver();
+    boolean isPlayerWin();
+
+    boolean isBoardFull();
 
     Stack<Pos> getValidPos();
 }
