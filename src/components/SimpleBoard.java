@@ -23,7 +23,15 @@ public class SimpleBoard implements IBoard {
 
     @Override
     public IBoard getDeepCopy() {
-        return new SimpleBoard(board.clone(), size, hasInit);
+        String[][] boardClone = new String[size][size];
+
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                boardClone[row][col] = board[row][col];
+            }
+        }
+
+        return new SimpleBoard(boardClone, size, hasInit);
     }
 
     @Override
@@ -40,9 +48,9 @@ public class SimpleBoard implements IBoard {
         String chess;
 
         if (blackOrWhite == BlackOrWhite.BLACK) {
-            chess = "*";
-        } else {
             chess = "#";
+        } else {
+            chess = "*";
         }
 
         if (row >= 0 && row <= size && col >= 0 && col <= size) {
@@ -50,11 +58,9 @@ public class SimpleBoard implements IBoard {
                 throw new IllegalArgumentException("Error: there is a chess at that position, please re-enter a position");
             } else {
                 board[row - 1][col - 1] = chess;
-                System.out.printf("Player has place a " + chess + " at position (%d, %d)\n", row, col);
-                System.out.println();
             }
         } else {
-            throw new IllegalArgumentException("Error: there is a chess at given position, please re-enter a position");
+            throw new IllegalArgumentException("Error: Index out of bound, please re-enter a position");
         }
     }
 
@@ -91,7 +97,7 @@ public class SimpleBoard implements IBoard {
         System.out.println("------------------------------");
     }
 
-    public boolean isGameOver() {
+    public boolean isPlayerWin() {
         initOrThrowException();
 
         // save consecutive five chess
@@ -135,13 +141,26 @@ public class SimpleBoard implements IBoard {
     }
 
     @Override
+    public boolean isBoardFull() {
+        for (int i = 0; i < size - 1; i++) {
+            for (int j = 0; j < size - 1; j++) {
+                if (Objects.equals(board[i][j], "+")) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public Stack<Pos> getValidPos() {
         Stack<Pos> validPos = new Stack<>();
 
         for (int row = 0; row < board.length; row++) {
             for (int column = 0; column < board[0].length; column++) {
-                if (board[row][column] == "+") {
-                    validPos.add(new Pos(row, column));
+                if (Objects.equals(board[row][column], "+")) {
+                    validPos.add(new Pos(row + 1, column + 1));
                 }
             }
         }
@@ -151,15 +170,17 @@ public class SimpleBoard implements IBoard {
 
     private boolean end(String[] consecutiveFivePos) {
         boolean flag = false;
-        String color = consecutiveFivePos[0];
+        String chess = consecutiveFivePos[0];
 
         for (int i = 1; i < 5; i++) {
-            if (!Objects.equals(color, consecutiveFivePos[i])) {
+            if (!Objects.equals(chess, consecutiveFivePos[i])) {
                 flag = false;
                 break;
-            } else
+            } else {
                 flag = true;
+            }
         }
+
         if (flag && Objects.equals(consecutiveFivePos[0], "*")) {
             return true;
         } else if (flag && Objects.equals(consecutiveFivePos[0], "#")) {

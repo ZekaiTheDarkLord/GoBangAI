@@ -52,14 +52,14 @@ public class SimpleGoBangModel implements IGoBangModel {
 
     @Override
     public void currentPlayerTakeTurn() throws IOException {
-        Pos placePosition;
+        Pos placePos;
 
         if (currentSide == BlackOrWhite.BLACK) {
-            placePosition = playerBlack.makingDecision(gameBoard);
-            gameBoard.placeChess(placePosition, currentSide);
+            placePos = playerBlack.makingDecision(gameBoard);
+            gameBoard.placeChess(placePos, currentSide);
         } else if (currentSide == BlackOrWhite.WHITE) {
-            placePosition = playerWhite.makingDecision(gameBoard);
-            gameBoard.placeChess(placePosition, currentSide);
+            placePos = playerWhite.makingDecision(gameBoard);
+            gameBoard.placeChess(placePos, currentSide);
         }
     }
 
@@ -74,7 +74,7 @@ public class SimpleGoBangModel implements IGoBangModel {
 
     @Override
     public boolean isGameEnd() {
-        return gameBoard.isGameOver();
+        return gameBoard.isPlayerWin() || gameBoard.isBoardFull();
     }
 
     @Override
