@@ -26,12 +26,20 @@ public class SimpleBoard implements IBoard {
         String[][] boardClone = new String[size][size];
 
         for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                boardClone[row][col] = board[row][col];
-            }
+            System.arraycopy(board[row], 0, boardClone[row], 0, size);
         }
 
         return new SimpleBoard(boardClone, size, hasInit);
+    }
+
+    @Override
+    public String[][] getBoard() {
+        String[][] boardClone = new String[size][size];
+
+        for (int row = 0; row < size; row++) {
+            System.arraycopy(board[row], 0, boardClone[row], 0, size);
+        }
+        return boardClone;
     }
 
     @Override

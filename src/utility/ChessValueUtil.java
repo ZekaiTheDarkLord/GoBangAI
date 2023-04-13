@@ -1,6 +1,7 @@
 package utility;
 
 import components.BlackOrWhite;
+import components.IBoard;
 import components.Pos;
 
 import java.util.*;
@@ -73,7 +74,8 @@ public class ChessValueUtil {
         whiteChessChainToValue.put("*+++*", 10);
     }
 
-    public static Double[][] getChessValueBoard(String[][] board, BlackOrWhite currentPlayer) {
+    public static Double[][] getChessValueBoard(IBoard gameBoard, BlackOrWhite currentPlayer) {
+        String[][] board = gameBoard.getBoard();
         Double[][] chessValueBoard = new Double[board.length][board[0].length];
 
         for (int row = 0; row < board.length; row++) {
@@ -105,10 +107,6 @@ public class ChessValueUtil {
 
             return posValue;
         }
-    }
-
-    private static int getChainScore(String chain, HashMap<String, Integer> chainToValue) {
-        return chainToValue.getOrDefault(chain, 0);
     }
 
     private static List<String> getStringChessChain(String[][] board, BlackOrWhite currentPlayer, Pos pos) {
@@ -274,18 +272,5 @@ public class ChessValueUtil {
 
     private static boolean inBoard(Pos p) {
         return p.row >= 0 && p.row < 7 && p.col >= 0 && p.col < 7;
-    }
-
-    private static boolean assignPositionValue(Pos chessPosition, List<String> chessLink, String[][] board) {
-        int value = 0;
-
-        if (!Objects.equals(board[chessPosition.row][chessPosition.col], "+")) return false;
-        for (String s : chessLink) {
-            if (blackChessChainToValue.containsKey(s)) {
-                value += blackChessChainToValue.get(s);
-            }
-        }
-
-        return true;
     }
 }

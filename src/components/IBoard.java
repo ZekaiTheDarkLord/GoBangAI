@@ -5,6 +5,8 @@ import java.util.Stack;
 public interface IBoard {
     IBoard getDeepCopy();
 
+    String[][] getBoard();
+
     int getSize();
 
     void placeChess(Pos chessPos, BlackOrWhite color);
