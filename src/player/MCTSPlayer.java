@@ -16,6 +16,6 @@ public class MCTSPlayer implements IPlayer {
     @Override
     public Pos makingDecision(IBoard gameBoard) throws IOException {
         MCTSNode node = new MCTSNode(gameBoard.getDeepCopy(), this.side);
-        return node.mctsSearch(200000);
+        return node.mctsSearch(10000);
     }
 }

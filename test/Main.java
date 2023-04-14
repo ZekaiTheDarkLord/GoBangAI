@@ -3,6 +3,7 @@ import game.IGoBangController;
 import game.SimpleGoBangController;
 import player.HumanPlayer;
 import player.MCTSPlayer;
+import player.UtilityPlayer;
 
 import java.io.IOException;
 

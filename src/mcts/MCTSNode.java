@@ -3,6 +3,7 @@ package mcts;
 import components.BlackOrWhite;
 import components.IBoard;
 import components.Pos;
+import utility.ChessValueUtil;
 
 import java.util.*;
 
@@ -18,6 +19,7 @@ public class MCTSNode {
     private final BlackOrWhite aiSide;
     private final List<MCTSNode> children;
     private final Stack<Pos> untriedActions;
+    private final Double[][] valueBoard;
 
     public MCTSNode(IBoard board, BlackOrWhite inputColor) {
         this.gameBoard = board;
@@ -27,6 +29,7 @@ public class MCTSNode {
         this.parentAction = null;
         this.children = new ArrayList<>();
         this.untriedActions = board.getValidPos();
+        this.valueBoard = ChessValueUtil.getChessValueBoard(board, inputColor);
     }
 
     public MCTSNode(IBoard board, MCTSNode inputParent, Pos inputAction, BlackOrWhite color, BlackOrWhite inputSide) {
@@ -37,6 +40,7 @@ public class MCTSNode {
         this.currentPlayer = switchColor(color);
         this.aiSide = inputSide;
         this.children = new ArrayList<>();
+        this.valueBoard = ChessValueUtil.getChessValueBoard(board, inputSide);
     }
 
     // apply the Monte Carlo Tree search to get the best node to use
@@ -132,6 +136,31 @@ public class MCTSNode {
         return scoreToNode.get(bestScore);
     }
 
+    private Pos getHighestValuePos(Double[][] valueBoard) {
+        List<Pos> highestValuePos = new ArrayList<>();
+        double highest = -1;
+
+        if (valueBoard[3][3] >= 0) {
+            return new Pos(3, 3);
+        }
+
+        for (int row = 0; row < valueBoard.length; row++) {
+            for (int col = 0; col < valueBoard[0].length; col++) {
+                if (valueBoard[row][col] - highest > 0.0001) {
+                    highest = valueBoard[row][col];
+                    highestValuePos = new ArrayList<>();
+                    highestValuePos.add(new Pos(row, col));
+                } else if (valueBoard[row][col] - highest < 0.0001 && valueBoard[row][col] - highest >= 0) {
+                    highestValuePos.add(new Pos(row, col));
+                }
+            }
+        }
+
+        int randomIndex = new Random().nextInt(highestValuePos.size());
+
+        return highestValuePos.get(randomIndex);
+    }
+
     // pick a random action
     private Pos simulateHelper(List<Pos> possibleMoves) {
         Random rand = new Random();
@@ -142,7 +171,10 @@ public class MCTSNode {
 
     // calculate the UCT value of the given node
     private double getUCT(MCTSNode child, double cParam) {
-        return ((double) child.getWinningScore() / (double) child.getNumberOfVisits()) +
+        double utilityValue = child.getWinningScore() * 100 +
+                valueBoard[child.parentAction.row - 1][child.parentAction.col - 1];
+
+        return (utilityValue / (double) child.getNumberOfVisits()) +
                 cParam * Math.sqrt((2 * Math.log(this.getNumberOfVisits()) / child.getNumberOfVisits()));
     }
 

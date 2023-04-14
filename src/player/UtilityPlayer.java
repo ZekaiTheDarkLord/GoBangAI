@@ -20,7 +20,14 @@ public class UtilityPlayer implements IPlayer {
     @Override
     public Pos makingDecision(IBoard gameBoard) throws IOException {
         Double[][] valueBoard = ChessValueUtil.getChessValueBoard(gameBoard, side);
-        return getHighestValuePos(valueBoard);
+
+        if (valueBoard[3][3] >= 0) {
+            return new Pos(gameBoard.getSize() / 2 + 1, gameBoard.getSize() / 2 + 1);
+        }
+
+        Pos returnPos = getHighestValuePos(valueBoard);
+
+        return new Pos(returnPos.row + 1, returnPos.col + 1);
     }
 
     private Pos getHighestValuePos(Double[][] valueBoard) {
@@ -33,7 +40,7 @@ public class UtilityPlayer implements IPlayer {
                     highest = valueBoard[row][col];
                     highestValuePos = new ArrayList<>();
                     highestValuePos.add(new Pos(row, col));
-                } else if (valueBoard[row][col] - highest < 0.0001 && valueBoard[row][col] - highest > 0) {
+                } else if (valueBoard[row][col] - highest < 0.0001 && valueBoard[row][col] - highest >= 0) {
                     highestValuePos.add(new Pos(row, col));
                 }
             }
