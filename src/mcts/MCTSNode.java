@@ -7,6 +7,8 @@ import utility.ChessValueUtil;
 
 import java.util.*;
 
+import static player.UtilityPlayer.getPos;
+
 // class that implements monte carlo tree search
 public class MCTSNode {
     private final IBoard gameBoard;
@@ -144,21 +146,7 @@ public class MCTSNode {
             return new Pos(3, 3);
         }
 
-        for (int row = 0; row < valueBoard.length; row++) {
-            for (int col = 0; col < valueBoard[0].length; col++) {
-                if (valueBoard[row][col] - highest > 0.0001) {
-                    highest = valueBoard[row][col];
-                    highestValuePos = new ArrayList<>();
-                    highestValuePos.add(new Pos(row, col));
-                } else if (valueBoard[row][col] - highest < 0.0001 && valueBoard[row][col] - highest >= 0) {
-                    highestValuePos.add(new Pos(row, col));
-                }
-            }
-        }
-
-        int randomIndex = new Random().nextInt(highestValuePos.size());
-
-        return highestValuePos.get(randomIndex);
+        return getPos(valueBoard, highestValuePos, highest);
     }
 
     // pick a random action

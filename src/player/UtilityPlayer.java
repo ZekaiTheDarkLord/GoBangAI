@@ -22,10 +22,14 @@ public class UtilityPlayer implements IPlayer {
         Double[][] valueBoard = ChessValueUtil.getChessValueBoard(gameBoard, side);
 
         if (valueBoard[3][3] >= 0) {
+            System.out.println("Utility player place the chess at: " +
+                    "(" + (gameBoard.getSize() / 2 + 1) + ", " + (gameBoard.getSize() / 2 + 1) + ").");
             return new Pos(gameBoard.getSize() / 2 + 1, gameBoard.getSize() / 2 + 1);
         }
 
         Pos returnPos = getHighestValuePos(valueBoard);
+        System.out.println("Utility player place the chess at: " + "(" + returnPos.row + ", " + returnPos.col + ").");
+
 
         return new Pos(returnPos.row + 1, returnPos.col + 1);
     }
@@ -34,6 +38,10 @@ public class UtilityPlayer implements IPlayer {
         List<Pos> highestValuePos = new ArrayList<>();
         double highest = -1;
 
+        return getPos(valueBoard, highestValuePos, highest);
+    }
+
+    public static Pos getPos(Double[][] valueBoard, List<Pos> highestValuePos, double highest) {
         for (int row = 0; row < valueBoard.length; row++) {
             for (int col = 0; col < valueBoard[0].length; col++) {
                 if (valueBoard[row][col] - highest > 0.0001) {

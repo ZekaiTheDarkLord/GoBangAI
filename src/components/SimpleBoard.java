@@ -1,7 +1,5 @@
 package components;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -111,37 +109,44 @@ public class SimpleBoard implements IBoard {
         // save consecutive five chess
         String[] consecutiveFivePos = new String[5];
 
+
+        // 0 1 2 3 4 5
+
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size - 4; j++) {
                 System.arraycopy(board[i], j, consecutiveFivePos, 0, 5);
-                if (end(consecutiveFivePos)) return true;
+                if (isFiveConsecutiveChess(consecutiveFivePos)) return true;
             }
         }
 
-        for (int i = 0; i < size - 5; i++) {
-            for (int j = 0; j < size - 1; j++) {
+        for (int i = 0; i < size - 4; i++) {
+            for (int j = 0; j < size; j++) {
+                if (i == 2 && j == 6) {
+                    System.out.println();
+                }
+
                 for (int k = 0; k < 5; k++) {
                     consecutiveFivePos[k] = board[i + k][j];
                 }
-                if (end(consecutiveFivePos)) return true;
+                if (isFiveConsecutiveChess(consecutiveFivePos)) return true;
             }
         }
 
-        for (int i = 0; i < size - 5; i++) {
-            for (int j = 0; j < size - 5; j++) {
+        for (int i = 0; i < size - 4; i++) {
+            for (int j = 0; j < size - 4; j++) {
                 for (int k = 0; k < 5; k++) {
                     consecutiveFivePos[k] = board[i + k][j + k];
                 }
-                if (end(consecutiveFivePos)) return true;
+                if (isFiveConsecutiveChess(consecutiveFivePos)) return true;
             }
         }
 
-        for (int i = 4; i < size - 1; i++) {
-            for (int j = 0; j < size - 5; j++) {
+        for (int i = 4; i < size; i++) {
+            for (int j = 0; j < size - 4; j++) {
                 for (int k = 0; k < 5; k++) {
                     consecutiveFivePos[k] = board[i - k][j + k];
                 }
-                if (end(consecutiveFivePos)) return true;
+                if (isFiveConsecutiveChess(consecutiveFivePos)) return true;
             }
         }
 
@@ -176,25 +181,22 @@ public class SimpleBoard implements IBoard {
         return validPos;
     }
 
-    private boolean end(String[] consecutiveFivePos) {
-        boolean flag = false;
+    private boolean isFiveConsecutiveChess(String[] consecutiveFivePos) {
+        boolean allSameChess = false;
         String chess = consecutiveFivePos[0];
 
         for (int i = 1; i < 5; i++) {
             if (!Objects.equals(chess, consecutiveFivePos[i])) {
-                flag = false;
+                allSameChess = false;
                 break;
             } else {
-                flag = true;
+                allSameChess = true;
             }
         }
 
-        if (flag && Objects.equals(consecutiveFivePos[0], "*")) {
+        if (allSameChess && Objects.equals(consecutiveFivePos[0], "*")) {
             return true;
-        } else if (flag && Objects.equals(consecutiveFivePos[0], "#")) {
-            return true;
-        }
-        return false;
+        } else return allSameChess && Objects.equals(consecutiveFivePos[0], "#");
     }
 
     private void initOrThrowException() {

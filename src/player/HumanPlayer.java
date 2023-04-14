@@ -30,6 +30,8 @@ public class HumanPlayer implements IPlayer {
         inputString = br.readLine();
         col = Integer.parseInt(inputString);
 
+        System.out.println("Human player place the chess at: " + "(" + row + ", " + col + ").");
+
 
         return new Pos(row, col);
     }

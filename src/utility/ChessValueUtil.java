@@ -93,6 +93,10 @@ public class ChessValueUtil {
         } else {
             double posValue = 0.0;
 
+            double attackRatio = currentPlayer == BlackOrWhite.BLACK ?
+                    0.7 : 0.4;
+            double defenseRatio = 1.0 - attackRatio;
+
             List<String> stringChessChain = getAllChessChains(board, currentPlayer, pos);
 
             for (String chain : stringChessChain) {
@@ -102,7 +106,7 @@ public class ChessValueUtil {
                 int defenseScore = currentPlayer == BlackOrWhite.BLACK ?
                         whiteChessChainToValue.getOrDefault(chain, 0) :
                         blackChessChainToValue.getOrDefault(chain, 0);
-                posValue += attackScore * 0.7 + defenseScore * 0.3;
+                posValue += attackScore * attackRatio + defenseScore * defenseRatio;
             }
 
             return posValue;
@@ -132,81 +136,83 @@ public class ChessValueUtil {
         String currentPlayerChess = currentPlayer == BlackOrWhite.BLACK ? "#" : "*";
         String opponentPlayerChess = currentPlayer == BlackOrWhite.BLACK ? "*" : "#";
 
-        Pos layStart = new Pos(chessRowIndex, chessColIndex - loc + 1);
-        Pos layEnd = new Pos(chessRowIndex, chessColIndex + chainLength - loc);
-        int LayStartCol = layStart.col;
-        int LayEndCol = layEnd.col;
+        Pos horizontalStartPos = new Pos(chessRowIndex, chessColIndex - loc + 1);
+        Pos horizontalEndPos = new Pos(chessRowIndex, chessColIndex + chainLength - loc);
+        int horizontalStartColIndex = horizontalStartPos.col;
+        int horizontalEndColIndex = horizontalEndPos.col;
 
-        iterateHorizontalOrVertical(board, result, layStart, layEnd, LayStartCol, LayEndCol,
+        iterateHorizontalOrVertical(board, result, horizontalStartPos, horizontalEndPos, horizontalStartColIndex, horizontalEndColIndex,
                 currentPlayerChess, opponentPlayerChess, chessRowIndex, true);
 
-        Pos standStart = new Pos(chessRowIndex - loc + 1, chessColIndex);
-        Pos standEnd = new Pos(chessRowIndex + chainLength - loc, chessColIndex);
-        int StandStartRow = standStart.row;
-        int StandEndRow = standEnd.row;
+        Pos verticalStartPos = new Pos(chessRowIndex - loc + 1, chessColIndex);
+        Pos verticalEndPos = new Pos(chessRowIndex + chainLength - loc, chessColIndex);
+        int verticalStartRowIndex = verticalStartPos.row;
+        int verticalEndRowIndex = verticalEndPos.row;
 
-        iterateHorizontalOrVertical(board, result, standStart, standEnd, StandStartRow, StandEndRow,
+        iterateHorizontalOrVertical(board, result, verticalStartPos, verticalEndPos, verticalStartRowIndex, verticalEndRowIndex,
                 currentPlayerChess, opponentPlayerChess, chessColIndex, false);
 
         Pos MainStart = new Pos(chessRowIndex - loc + 1, chessColIndex - loc + 1);
         Pos MainEnd = new Pos(chessRowIndex + chainLength - loc, chessColIndex + chainLength - loc);
 
-        int MainStartRow = MainStart.row;
-        int MainEndRow = MainEnd.row;
-        int MainStartCol = MainStart.col;
+        int mainStartRowIndex = MainStart.row;
+        int mainEndRowIndex = MainEnd.row;
+        int mainStartColIndex = MainStart.col;
 
         if (startEndInBoard(MainStart, MainEnd)) {
-            StringBuilder attackList = new StringBuilder();
-            StringBuilder defendList = new StringBuilder();
+            StringBuilder currentPlayerPossibleChain = new StringBuilder();
+            StringBuilder opponentPlayerPossibleChain = new StringBuilder();
 
-            for (int rowi = MainStartRow, coli = MainStartCol; rowi <= MainEndRow; rowi++, coli++) {
-                if (rowi == chessRowIndex && coli == chessColIndex) {
-                    attackList.append(currentPlayerChess);
+            for (int row = mainStartRowIndex, col = mainStartColIndex; row <= mainEndRowIndex; row++, col++) {
+                if (row == chessRowIndex && col == chessColIndex) {
+                    currentPlayerPossibleChain.append(currentPlayerChess);
                 } else {
-                    attackList.append(board[rowi][coli]);
+                    currentPlayerPossibleChain.append(board[row][col]);
                 }
             }
-            for (int rowi = MainStartRow, coli = MainStartCol; rowi <= MainEndRow; rowi++, coli++) {
-                if (rowi == chessRowIndex && coli == chessColIndex) {
-                    defendList.append(opponentPlayerChess);
+
+            for (int row = mainStartRowIndex, col = mainStartColIndex; row <= mainEndRowIndex; row++, col++) {
+                if (row == chessRowIndex && col == chessColIndex) {
+                    opponentPlayerPossibleChain.append(opponentPlayerChess);
                 } else {
-                    defendList.append(board[rowi][coli]);
+                    opponentPlayerPossibleChain.append(board[row][col]);
                 }
             }
-            result.add(attackList.toString());
-            result.add(defendList.toString());
+
+            result.add(currentPlayerPossibleChain.toString());
+            result.add(opponentPlayerPossibleChain.toString());
         }
 
-        Pos ViceStart = new Pos(chessRowIndex + loc - 1, chessColIndex - loc + 1);
-        Pos ViceEnd = new Pos(chessRowIndex - chainLength + loc, chessColIndex + chainLength - loc);
+        Pos viceStartPos = new Pos(chessRowIndex + loc - 1, chessColIndex - loc + 1);
+        Pos viceEndPos = new Pos(chessRowIndex - chainLength + loc, chessColIndex + chainLength - loc);
 
-        int ViceStartRow = ViceStart.row;
-        int ViceEndRow = ViceEnd.row;
-        int ViceStartCol = ViceStart.col;
+        int viceStartRowIndex = viceStartPos.row;
+        int viceEndRowIndex = viceEndPos.row;
+        int viceStartColIndex = viceStartPos.col;
 
-        if (startEndInBoard(ViceStart, ViceEnd)) {
+        if (startEndInBoard(viceStartPos, viceEndPos)) {
 
-            StringBuilder attackList = new StringBuilder();
-            StringBuilder defendList = new StringBuilder();
+            StringBuilder currentPlayerPossibleChain = new StringBuilder();
+            StringBuilder opponentPlayerPossibleChain = new StringBuilder();
 
-            for (int rowi = ViceStartRow, coli = ViceStartCol; rowi >= ViceEndRow; rowi--, coli++) {
-                if (rowi == chessRowIndex && coli == chessColIndex) {
-                    attackList.append(currentPlayerChess);
+            for (int row = viceStartRowIndex, col = viceStartColIndex; row >= viceEndRowIndex; row--, col++) {
+                if (row == chessRowIndex && col == chessColIndex) {
+                    currentPlayerPossibleChain.append(currentPlayerChess);
                 } else {
-                    attackList.append(board[rowi][coli]);
+                    currentPlayerPossibleChain.append(board[row][col]);
                 }
             }
 
-            for (int rowi = ViceStartRow, coli = ViceStartCol; rowi >= ViceEndRow; rowi--, coli++) {
-                if (rowi == chessRowIndex && coli == chessColIndex) {
-                    defendList.append(opponentPlayerChess);
+            for (int row = viceStartRowIndex, col = viceStartColIndex; row >= viceEndRowIndex; row--, col++) {
+                if (row == chessRowIndex && col == chessColIndex) {
+                    opponentPlayerPossibleChain.append(opponentPlayerChess);
                 } else {
-                    defendList.append(board[rowi][coli]);
+                    opponentPlayerPossibleChain.append(board[row][col]);
                 }
             }
 
-            result.add(attackList.toString());
-            result.add(defendList.toString());
+            result.add(currentPlayerPossibleChain.toString());
+            result.add(opponentPlayerPossibleChain.toString());
         }
 
         return result;
@@ -218,27 +224,28 @@ public class ChessValueUtil {
                                                     String currentPlayerChess, String opponentPlayerChess,
                                                     int chessIndex, boolean isRowIndex) {
         if (startEndInBoard(startPos, endPos)) {
-            StringBuilder attackList = new StringBuilder();
-            StringBuilder defendList = new StringBuilder();
+            StringBuilder currentPlayerPossibleChain = new StringBuilder();
+            StringBuilder opponentPlayerPossibleChain = new StringBuilder();
 
-            appendListHelper(board, startIndex, endIndex, currentPlayerChess, chessIndex, isRowIndex, attackList);
+            appendListHelper(board, startIndex, endIndex, currentPlayerChess, chessIndex, isRowIndex, currentPlayerPossibleChain);
 
-            appendListHelper(board, startIndex, endIndex, opponentPlayerChess, chessIndex, isRowIndex, defendList);
+            appendListHelper(board, startIndex, endIndex, opponentPlayerChess, chessIndex, isRowIndex, opponentPlayerPossibleChain);
 
-            result.add(attackList.toString());
-            result.add(defendList.toString());
+            result.add(currentPlayerPossibleChain.toString());
+            result.add(opponentPlayerPossibleChain.toString());
         }
     }
 
-    private static void appendListHelper(String[][] board, int startIndex, int endIndex, String currentPlayerChess, int chessIndex, boolean isRowIndex, StringBuilder attackList) {
+    private static void appendListHelper(String[][] board, int startIndex, int endIndex, String currentPlayerChess,
+                                         int chessIndex, boolean isRowIndex, StringBuilder possibleChessChain) {
         for (int i = startIndex; i <= endIndex; i++) {
             if (i == chessIndex) {
-                attackList.append(currentPlayerChess);
+                possibleChessChain.append(currentPlayerChess);
             } else {
                 if (isRowIndex) {
-                    attackList.append(board[chessIndex][i]);
+                    possibleChessChain.append(board[chessIndex][i]);
                 } else {
-                    attackList.append(board[i][chessIndex]);
+                    possibleChessChain.append(board[i][chessIndex]);
                 }
             }
         }
