@@ -109,9 +109,6 @@ public class SimpleBoard implements IBoard {
         // save consecutive five chess
         String[] consecutiveFivePos = new String[5];
 
-
-        // 0 1 2 3 4 5
-
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size - 4; j++) {
                 System.arraycopy(board[i], j, consecutiveFivePos, 0, 5);
@@ -121,10 +118,6 @@ public class SimpleBoard implements IBoard {
 
         for (int i = 0; i < size - 4; i++) {
             for (int j = 0; j < size; j++) {
-                if (i == 2 && j == 6) {
-                    System.out.println();
-                }
-
                 for (int k = 0; k < 5; k++) {
                     consecutiveFivePos[k] = board[i + k][j];
                 }
